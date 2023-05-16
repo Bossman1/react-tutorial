@@ -4,29 +4,37 @@ import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/outline'
 import {Navigate, NavLink, Outlet} from "react-router-dom";
 import {useStateContext} from "../contexts/ContextProvider.tsx";
 import {UserIcon} from "@heroicons/react/20/solid";
+import axiosClient from "../axios.js";
 
-
-const navigation = [
-    {name: 'Dashboard', to: '/'},
-    {name: 'Surveys', to: '/surveys'},
-]
-
-
-// @ts-ignore
-const logout = (ev) => {
-    ev.preventDefault();
-}
-
-
-// @ts-ignore
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
 
 export default function DefaultLayout() {
 
-    const {currentUser, userToken} = useStateContext()
 
+
+    const {currentUser, userToken, setUserToken, setCurrentUser} = useStateContext()
+
+    const navigation = [
+        {name: 'Dashboard', to: '/'},
+        {name: 'Surveys', to: '/surveys'},
+    ]
+
+
+// @ts-ignore
+    const logout = (ev) => {
+        ev.preventDefault();
+
+        axiosClient.post('/logout')
+            .then((res) => {
+                setCurrentUser({})
+                setUserToken(null)
+            })
+    }
+
+
+// @ts-ignore
+    function classNames(...classes) {
+        return classes.filter(Boolean).join(' ')
+    }
 
     if (!userToken) {
         return <Navigate to="login"/>
