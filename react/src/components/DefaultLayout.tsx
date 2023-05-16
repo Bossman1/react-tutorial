@@ -15,7 +15,6 @@ const navigation = [
 // @ts-ignore
 const logout = (ev) => {
     ev.preventDefault();
-    console.log("Log out");
 }
 
 

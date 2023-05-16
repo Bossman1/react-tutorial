@@ -3,8 +3,10 @@
 import {Link} from "react-router-dom";
 import {useState} from "react";
 import axiosClient from "../axios.js";
+import {useStateContext} from "../contexts/ContextProvider.tsx";
 
 export default function SignUp() {
+    const {setCurrentUser, setUserToken} =  useStateContext();
     const [fullName, setFullname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,16 +20,21 @@ export default function SignUp() {
             name: fullName,
             email: email,
             password: password,
-            passwordConfirmation: passwordConfirmation,
+            password_confirmation: passwordConfirmation,
 
         })
             .then(({data}) => {
-                console.log(data);
+                setCurrentUser(data.user)
+                setUserToken(data.token)
             })
-            .catch(({response}) => {
-                console.log(response);
+            .catch((error) => {
+                if (error.response) {
+                    const finalErrors = Object.values(error.response.data.errors).reduce((accum, next) => [...accum, ...next], [])
+                    setError({__html: finalErrors.join('<br>')})
+                }
             })
     }
+
 
     return (
         <>
@@ -40,6 +47,11 @@ export default function SignUp() {
                 </div>
             </h2>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+
+                {/*errors*/}
+                {error.__html && (<div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error}></div>)}
+
+
                 <form className="space-y-6" action="#" method="POST" onSubmit={onSubmit}>
                     <div>
                         <label htmlFor="full-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -50,6 +62,8 @@ export default function SignUp() {
                                 id="full-name"
                                 name="name"
                                 type="text"
+                                value={fullName}
+                                onChange={(ev)=> setFullname(ev.target.value)}
                                 required
                                 placeholder="Full name"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -65,6 +79,8 @@ export default function SignUp() {
                                 id="email"
                                 name="email"
                                 type="email"
+                                value={email}
+                                onChange={(ev)=> setEmail(ev.target.value)}
                                 required
                                 placeholder="E-mail"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -82,6 +98,8 @@ export default function SignUp() {
                             <input
                                 id="password"
                                 name="password"
+                                value={password}
+                                onChange={(ev)=> setPassword(ev.target.value)}
                                 type="password"
                                 required
                                 placeholder="Password"
@@ -102,6 +120,8 @@ export default function SignUp() {
                                 id="password-confirmation"
                                 name="password_confirmation"
                                 type="password"
+                                value={passwordConfirmation}
+                                onChange={(ev)=> setpasswordConfirmation(ev.target.value)}
                                 required
                                 placeholder="Password confirmation"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

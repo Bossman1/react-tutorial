@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     public function signup(SignUpRequest $request)
     {
-        dd(111);
+
         $data = $request->validated();
 
         /**
