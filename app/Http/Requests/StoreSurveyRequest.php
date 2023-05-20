@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreSurveyRequest extends FormRequest
 {
@@ -18,7 +19,7 @@ class StoreSurveyRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'user_id' => $this->user()->id
+            'user_id' => $this->user()->id,
         ]);
     }
 

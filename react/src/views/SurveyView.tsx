@@ -2,6 +2,7 @@ import PageComponent from "../components/PageComponent.tsx";
 import {useState} from "react";
 import {PhotoIcon} from "@heroicons/react/20/solid";
 import TButton from "../components/core/TButton.tsx";
+import axiosClient from "../axios.js";
 
 export default function SurveyView() {
     const [survey, setSurvey] = useState({
@@ -16,12 +17,16 @@ export default function SurveyView() {
     });
 
     const onImageChoose = () => {
+
         console.log('on image choose')
     }
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-        console.log(ev);
+         axiosClient.post('/survey',{
+
+         })
+
     }
     // @ts-ignore
     return (
@@ -123,14 +128,15 @@ export default function SurveyView() {
                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                             </div>
+                            <div className="ml-3 text-sm">
+                                <label htmlFor="comments" className="font-medium text-gray-700">Active</label>
+                                <p className="text-gray-500">
+                                    Whether to make survey publicly available
+                                </p>
+                            </div>
+
                         </div>
 
-                        <div className="ml-3 text-sm">
-                            <label htmlFor="comments" className="font-medium text-gray-700">Active</label>
-                            <p className="text-gray-500">
-                                Whether to make survey publicly available
-                            </p>
-                        </div>
 
                         <div className="bg-gray-50 py-3 px-4 text-right sm:ps6">
                             <TButton>Save</TButton>
