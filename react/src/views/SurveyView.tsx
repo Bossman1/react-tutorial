@@ -3,8 +3,12 @@ import {useState} from "react";
 import {PhotoIcon} from "@heroicons/react/20/solid";
 import TButton from "../components/core/TButton.tsx";
 import axiosClient from "../axios.js";
+import {useNavigate} from "react-router-dom";
 
 export default function SurveyView() {
+
+    const navigate = useNavigate();
+
     const [survey, setSurvey] = useState({
         title: "",
         slug: "",
@@ -16,16 +20,36 @@ export default function SurveyView() {
         questions: []
     });
 
-    const onImageChoose = () => {
+    const onImageChoose = (ev) => {
+        const file = ev.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSurvey({
+                ...survey,
+                image: file,
+                image_url: reader.result
+            })
+            ev.target.value = ""
+        }
+
+        reader.readAsDataURL(file);
 
         console.log('on image choose')
     }
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-         axiosClient.post('/survey',{
+        const payload = {...survey};
+        if (payload.image) {
+            payload.image = payload.image_url
+        }
+        delete payload.image_url
 
-         })
+        axiosClient.post('/survey', payload)
+            .then((res) => {
+                console.log(res)
+                navigate('/surveys')
+            })
 
     }
     // @ts-ignore
